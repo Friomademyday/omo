@@ -3,274 +3,459 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AquaFlow | AE Edition</title>
+    <title>AquaFlow Pro | Light Edition</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: #f5f5f5;
-            color: #232323;
+            background-color: #f0f4f8;
+            color: #2d3748;
             height: 100vh;
-            overflow: hidden;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
 
         header {
-            background-color: #e1e1e1;
-            padding: 10px 20px;
-            border-bottom: 1px solid #b4b4b4;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 25px;
+            text-align: center;
+            background: linear-gradient(135deg, #ffffff 0%, #e6f0ff 100%);
+            border-bottom: 2px solid #3182ce;
         }
 
-        .ae-label {
-            font-size: 12px;
-            font-weight: bold;
-            text-transform: uppercase;
-            color: #666;
+        .header-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #2b6cb0;
             letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         main {
             flex: 1;
-            position: relative;
-            overflow: hidden;
+            overflow-y: auto;
+            padding: 20px;
+            padding-bottom: 120px;
         }
 
         .view {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            padding: 20px;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
-            opacity: 0;
-            transform: translateY(20px);
-            pointer-events: none;
+            display: none;
+            animation: slideUp 0.4s ease-out;
         }
 
         .view.active {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
+            display: block;
         }
 
-        .card {
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 18px;
+            color: #4a5568;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+
+        .esp-banner {
             background: #ffffff;
-            border: 1px solid #dcdcdc;
-            padding: 20px;
+            border: 1px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+        }
+
+        .esp-banner:hover {
+            transform: scale(1.02);
+        }
+
+        .status-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             margin-bottom: 15px;
-            border-radius: 4px;
+        }
+
+        .pulse-green {
+            width: 12px;
+            height: 12px;
+            background: #48bb78;
+            border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(72, 187, 120, 0.7);
+            animation: active-pulse 2s infinite;
+        }
+
+        .pulse-red {
+            width: 12px;
+            height: 12px;
+            background: #f56565;
+            border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(245, 101, 101, 0.7);
+            animation: dead-pulse 2s infinite;
+        }
+
+        @keyframes active-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(72, 187, 120, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(72, 187, 120, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(72, 187, 120, 0); }
+        }
+
+        @keyframes dead-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(245, 101, 101, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(245, 101, 101, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(245, 101, 101, 0); }
+        }
+
+        .esp-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .controls {
+            display: flex;
+            gap: 30px;
+        }
+
+        .control-btn {
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .conn-text { color: #3182ce; }
+        .disc-text { color: #e53e3e; }
+
+        .ai-card {
+            background: #ffffff;
+            border-left: 6px solid #3182ce;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
-        .esp-grid {
+        .pond-tag {
+            display: inline-block;
+            background: #ebf8ff;
+            color: #2b6cb0;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .data-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            grid-template-columns: 1fr;
             gap: 15px;
         }
 
-        .esp-node {
-            background: #ededed;
-            border: 1px solid #ccc;
-            padding: 15px;
-            text-align: center;
-            border-radius: 2px;
-        }
-
-        .status-dot {
-            height: 8px;
-            width: 8px;
-            background-color: #2ecc71;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 5px;
-        }
-
-        .ai-action-box {
-            border-left: 4px solid #4a90e2;
-            padding-left: 15px;
-            margin-top: 20px;
+        .pond-data-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #e2e8f0;
         }
 
         .data-row {
             display: flex;
             justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
+            padding: 8px 0;
+            border-bottom: 1px solid #f7fafc;
         }
 
+        .health-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #e2e8f0;
+        }
+
+        .health-score {
+            font-size: 20px;
+            font-weight: 900;
+        }
+
+        .score-good { color: #48bb78; }
+        .score-warn { color: #ecc94b; }
+
         nav {
-            background-color: #e1e1e1;
-            border-top: 1px solid #b4b4b4;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: #ffffff;
+            border-top: 2px solid #edf2f7;
             display: flex;
             justify-content: space-around;
-            padding: 10px 0;
-            padding-bottom: 25px;
+            padding: 15px 0 35px 0;
+            z-index: 1000;
         }
 
         .nav-item {
-            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             cursor: pointer;
+            color: #a0aec0;
+            transition: all 0.3s;
             flex: 1;
-            color: #777;
-            transition: color 0.2s;
         }
 
         .nav-item.active {
-            color: #4a90e2;
+            color: #3182ce;
         }
 
         .nav-item img {
-            width: 24px;
-            height: 24px;
-            display: block;
-            margin: 0 auto 4px;
+            width: 28px;
+            height: 28px;
+            margin-bottom: 6px;
+            opacity: 0.5;
+        }
+
+        .nav-item.active img {
+            opacity: 1;
+            filter: invert(38%) sepia(88%) saturate(543%) hue-rotate(176deg) brightness(92%) contrast(91%);
         }
 
         .nav-label {
             font-size: 10px;
-            font-weight: 600;
-        }
-
-        .btn-ae {
-            background: #cfcfcf;
-            border: 1px solid #a0a0a0;
-            padding: 5px 15px;
-            font-size: 12px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .btn-ae:hover {
-            background: #c0c0c0;
-        }
-
-        .health-bar-container {
-            background: #eee;
-            height: 20px;
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        .health-fill {
-            background: #2ecc71;
-            height: 100%;
-            width: 85%;
+            font-weight: 700;
+            text-transform: uppercase;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="ae-label">Project: Fish_Pond_Monitor_V1</div>
-        <div class="ae-label">Status: Render Ready</div>
+        <div class="header-title">AquaFlow Control</div>
     </header>
 
-    <main>
+    <main id="scroll-container">
+        
         <div id="view1" class="view active">
-            <h3>ESP Nodes Control</h3>
-            <p class="ae-label" style="margin-bottom: 20px;">Active Links</p>
-            <div class="esp-grid">
-                <div class="esp-node"><div class="status-dot"></div> ESP_01</div>
-                <div class="esp-node"><div class="status-dot"></div> ESP_02</div>
-                <div class="esp-node"><div class="status-dot"></div> ESP_03</div>
-                <div class="esp-node"><div class="status-dot"></div> ESP_04</div>
-                <div class="esp-node"><div class="status-dot"></div> ESP_05</div>
+            <h2 class="section-title">ESP Control Center</h2>
+            
+            <div class="esp-banner">
+                <div class="status-container">
+                    <div class="pulse-green"></div>
+                    <div class="esp-name">ESP_01</div>
+                </div>
+                <div class="controls">
+                    <span class="control-btn conn-text">CONNECT</span>
+                    <span class="control-btn disc-text">DISCONNECT</span>
+                </div>
+            </div>
+
+            <div class="esp-banner">
+                <div class="status-container">
+                    <div class="pulse-green"></div>
+                    <div class="esp-name">ESP_02</div>
+                </div>
+                <div class="controls">
+                    <span class="control-btn conn-text">CONNECT</span>
+                    <span class="control-btn disc-text">DISCONNECT</span>
+                </div>
+            </div>
+
+            <div class="esp-banner">
+                <div class="status-container">
+                    <div class="pulse-red"></div>
+                    <div class="esp-name">ESP_03</div>
+                </div>
+                <div class="controls">
+                    <span class="control-btn conn-text">CONNECT</span>
+                    <span class="control-btn disc-text">DISCONNECT</span>
+                </div>
+            </div>
+
+            <div class="esp-banner">
+                <div class="status-container">
+                    <div class="pulse-green"></div>
+                    <div class="esp-name">ESP_04</div>
+                </div>
+                <div class="controls">
+                    <span class="control-btn conn-text">CONNECT</span>
+                    <span class="control-btn disc-text">DISCONNECT</span>
+                </div>
+            </div>
+
+            <div class="esp-banner">
+                <div class="status-container">
+                    <div class="pulse-green"></div>
+                    <div class="esp-name">ESP_05</div>
+                </div>
+                <div class="controls">
+                    <span class="control-btn conn-text">CONNECT</span>
+                    <span class="control-btn disc-text">DISCONNECT</span>
+                </div>
             </div>
         </div>
 
         <div id="view2" class="view">
-            <h3>AI Prediction Engine</h3>
-            <div class="card">
-                <p><strong>Current Analysis:</strong> Water temperature trending low.</p>
-                <div class="ai-action-box">
-                    <p class="ae-label">Suggested Action</p>
-                    <p>Add warm water at 14:00 PM to maintain 22°C threshold.</p>
-                </div>
-                <button class="btn-ae">Execute Sequence</button>
+            <h2 class="section-title">AI Action Logic</h2>
+            
+            <div class="ai-card">
+                <div class="pond-tag">Origin: ESP_01</div>
+                <p style="font-weight: 700;">Critical Temperature Drop</p>
+                <p style="font-size: 14px; margin-top: 5px;">Temp at 15°C detected. Schedule: Add warm water at 14:30 PM today.</p>
             </div>
-            <div class="card">
-                <p><strong>pH Alert:</strong> 8.2 pH detected in Sector 3.</p>
-                <div class="ai-action-box">
-                    <p class="ae-label">Suggested Action</p>
-                    <p>Activate filtration system for 30 minutes.</p>
-                </div>
-                <button class="btn-ae">Dismiss Alert</button>
+
+            <div class="ai-card" style="border-left-color: #38b2ac;">
+                <div class="pond-tag">Origin: ESP_02</div>
+                <p style="font-weight: 700;">pH Level Alert</p>
+                <p style="font-size: 14px; margin-top: 5px;">pH is currently 8.4. Clean pond water filtration unit immediately.</p>
+            </div>
+
+            <div class="ai-card">
+                <div class="pond-tag">Origin: ESP_05</div>
+                <p style="font-weight: 700;">Oxygen Depletion</p>
+                <p style="font-size: 14px; margin-top: 5px;">Low oxygen levels. Increase aerator speed to 80% capacity.</p>
             </div>
         </div>
 
         <div id="view3" class="view">
-            <h3>Pond Data Stream</h3>
-            <div class="card">
-                <div class="data-row"><span>Temperature</span><span>24.5°C</span></div>
-                <div class="data-row"><span>pH Level</span><span>7.4</span></div>
-                <div class="data-row"><span>Oxygen</span><span>8.2 mg/L</span></div>
-                <div class="data-row"><span>Turbidity</span><span>Low</span></div>
+            <h2 class="section-title">Pond Data Streams</h2>
+            
+            <div class="pond-data-card" style="margin-bottom:15px;">
+                <div class="pond-tag">ESP_01 Data</div>
+                <div class="data-row"><span>Temp</span><span>22°C</span></div>
+                <div class="data-row"><span>pH</span><span>7.2</span></div>
+            </div>
+            <div class="pond-data-card" style="margin-bottom:15px;">
+                <div class="pond-tag">ESP_02 Data</div>
+                <div class="data-row"><span>Temp</span><span>21°C</span></div>
+                <div class="data-row"><span>pH</span><span>8.4</span></div>
+            </div>
+            <div class="pond-data-card" style="margin-bottom:15px;">
+                <div class="pond-tag">ESP_03 Data</div>
+                <div class="data-row"><span>Temp</span><span>--</span></div>
+                <div class="data-row"><span>pH</span><span>--</span></div>
+            </div>
+            <div class="pond-data-card" style="margin-bottom:15px;">
+                <div class="pond-tag">ESP_04 Data</div>
+                <div class="data-row"><span>Temp</span><span>24°C</span></div>
+                <div class="data-row"><span>pH</span><span>7.1</span></div>
+            </div>
+            <div class="pond-data-card" style="margin-bottom:15px;">
+                <div class="pond-tag">ESP_05 Data</div>
+                <div class="data-row"><span>Temp</span><span>23°C</span></div>
+                <div class="data-row"><span>pH</span><span>7.5</span></div>
             </div>
         </div>
 
         <div id="view4" class="view">
-            <h3>Ecosystem Health</h3>
-            <div class="card">
-                <p class="ae-label">Overall Stability</p>
-                <div class="health-bar-container">
-                    <div class="health-fill"></div>
+            <h2 class="section-title">Individual Health Status</h2>
+            
+            <div class="health-card">
+                <div>
+                    <div class="pond-tag">Pond 01</div>
+                    <p style="font-size: 12px; color: #718096;">Optimal Performance</p>
                 </div>
-                <p style="margin-top: 10px; font-size: 14px;">The pond is currently within optimal parameters. No immediate threats detected.</p>
+                <div class="health-score score-good">94%</div>
+            </div>
+
+            <div class="health-card">
+                <div>
+                    <div class="pond-tag">Pond 02</div>
+                    <p style="font-size: 12px; color: #718096;">Action Required</p>
+                </div>
+                <div class="health-score score-warn">62%</div>
+            </div>
+
+            <div class="health-card">
+                <div>
+                    <div class="pond-tag">Pond 03</div>
+                    <p style="font-size: 12px; color: #718096;">Offline</p>
+                </div>
+                <div class="health-score" style="color: #cbd5e0;">0%</div>
+            </div>
+
+            <div class="health-card">
+                <div>
+                    <div class="pond-tag">Pond 04</div>
+                    <p style="font-size: 12px; color: #718096;">Optimal Performance</p>
+                </div>
+                <div class="health-score score-good">91%</div>
+            </div>
+
+            <div class="health-card">
+                <div>
+                    <div class="pond-tag">Pond 05</div>
+                    <p style="font-size: 12px; color: #718096;">Minor Fluctuations</p>
+                </div>
+                <div class="health-score score-good">85%</div>
             </div>
         </div>
+
     </main>
 
     <nav>
-        <div class="nav-item active" onclick="showView(1)">
-            <img src="https://img.icons8.com/ios/50/4a90e2/chip.png" alt="ESP">
-            <div class="nav-label">ESP NODES</div>
+        <div class="nav-item active" onclick="showSection(1)">
+            <img src="https://img.icons8.com/ios/100/3182ce/electrical.png" alt="Wire">
+            <div class="nav-label">ESP Units</div>
         </div>
-        <div class="nav-item" onclick="showView(2)">
-            <img src="https://img.icons8.com/ios/50/777777/brain-3.png" alt="AI">
-            <div class="nav-label">PREDICTION</div>
+        <div class="nav-item" onclick="showSection(2)">
+            <img src="https://img.icons8.com/ios/100/a0aec0/bell.png" alt="Bell">
+            <div class="nav-label">Predictions</div>
         </div>
-        <div class="nav-item" onclick="showView(3)">
-            <img src="https://img.icons8.com/ios/50/777777/data-configuration.png" alt="Data">
-            <div class="nav-label">STREAM</div>
+        <div class="nav-item" onclick="showSection(3)">
+            <img src="https://img.icons8.com/ios/100/a0aec0/data-configuration.png" alt="Data">
+            <div class="nav-label">Streams</div>
         </div>
-        <div class="nav-item" onclick="showView(4)">
-            <img src="https://img.icons8.com/ios/50/777777/heart-monitor.png" alt="Health">
-            <div class="nav-label">HEALTH</div>
+        <div class="nav-item" onclick="showSection(4)">
+            <img src="https://img.icons8.com/ios/100/a0aec0/plus-2-math.png" alt="Health">
+            <div class="nav-label">Health</div>
         </div>
     </nav>
 
     <script>
-        function showView(viewIndex) {
+        function showSection(id) {
             const views = document.querySelectorAll('.view');
             const navItems = document.querySelectorAll('.nav-item');
             
-            views.forEach((v, i) => {
+            views.forEach((v, index) => {
                 v.classList.remove('active');
-                if(i === (viewIndex - 1)) {
+                if ((index + 1) === id) {
                     v.classList.add('active');
                 }
             });
 
-            navItems.forEach((item, i) => {
+            navItems.forEach((item, index) => {
                 item.classList.remove('active');
                 const img = item.querySelector('img');
-                img.src = img.src.replace('4a90e2', '777777');
                 
-                if(i === (viewIndex - 1)) {
+                if ((index + 1) === id) {
                     item.classList.add('active');
-                    const activeImg = item.querySelector('img');
-                    activeImg.src = activeImg.src.replace('777777', '4a90e2');
+                    img.src = img.src.replace('a0aec0', '3182ce');
+                } else {
+                    img.src = img.src.replace('3182ce', 'a0aec0');
                 }
             });
+
+            document.getElementById('scroll-container').scrollTop = 0;
         }
     </script>
 </body>
-</html>
+    </html>
